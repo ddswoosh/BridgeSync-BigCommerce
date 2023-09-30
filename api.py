@@ -1,5 +1,6 @@
 import requests,os,json,time
 import pandas as pd
+import win32com.client
 ct = time.localtime()
 em = str(ct.tm_min)
 eh = str(ct.tm_hour)
@@ -20,14 +21,27 @@ class Orders:
             "min_date_created": f"{ey}-{emm}-{ed}T{eh-1}:30:00.000-00:00",
             "max_date_created": f"{ey}-{emm}-{ed}T{eh}:{em}:00.000-00:00"
         }
-        orders_url = "******"
+        orders_url = "****"
         r = requests.get(orders_url, headers=self.header,params=self.parameters).json()
         self.orders_df = pd.DataFrame(r)
         self.order_id = self.orders_df.iloc[:, 0]
     def getId(self):
+        try:
+            self.order_id[0] = self.order[0] - 1
+        except:
+            print("There is an order ID discrepancy, was there a server shutdown recently?")
+            outlook = win32com.client.Dispatch('Outlook.Application')
+            olmailitem = 0x0
+            newmail = outlook.CreateItem(olmailitem)
+            newmail.Subject = "API Import Error"
+            newmail.to = "****", "****"
+            newmail.Body = (
+                "THe BigCommerce import to Fishbowl has failed"
+            )
+            newmail.Send()
         self.product_dfs = []
         for i in self.order_id:
-            self.products_url = "*******"
+            self.products_url = "****"
             r = requests.get(self.products_url,headers=self.header).json()
             self.product_df = pd.DataFrame(r)
             self.product_dfs.append(self.product_df)
@@ -51,7 +65,6 @@ class Orders:
         self.orders_df.to_csv("test.csv",index=False)
         self.destruct=True
         self.delete()
-
     def delete(self):
         my_file = r"C:\Users\DamienDavis\AppData\Roaming\JetBrains\PyCharmCE2023.1\scratches\test.csv"
         if os.path.isfile(my_file):
