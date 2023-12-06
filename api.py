@@ -1,6 +1,9 @@
 import requests,os,json,time,sys
 import pandas as pd
 import win32com.client
+
+# Set local time variable (PST)
+
 ct = time.localtime()
 class Orders:
     if ct.tm_min == int(30):
@@ -11,6 +14,9 @@ class Orders:
                 "Content-Type": "application/json",
                 "Accept": "application/json"
             }
+
+# Grab information from a csv file that stores the last known order id so we can always pull last order + 1
+            
             with open("prev_order_id.csv", "r") as f:
                 f1 = f.read()
                 self.min_order = f1[3:]
@@ -18,6 +24,9 @@ class Orders:
                 "min_id": self.min_order
             }
             orders_url = "******"
+
+# Attempt to communicate with the ecommerce website and extract needed data, otherwise we raise an error and email the IT department
+            
             try:
                 self.r = requests.get(orders_url, headers=self.header,params=self.parameters).json()
                 self.orders_df = pd.DataFrame(self.r)
@@ -30,6 +39,8 @@ class Orders:
     else:
         raise RuntimeError
 
+# Outlook email script 
+    
     def email(self):
         outlook = win32com.client.Dispatch('Outlook.Application')
         olmailitem = 0x0
@@ -46,11 +57,15 @@ class Orders:
         newmail.Send()
         sys.exit(0)
 
+# Grab the product information without indexing so we are able to easily access the data we need
+
     def setId(self):
             self.last_id=self.last_id+1
             self.last_id.to_csv("prev_order_id.csv", index=False)
             self.getId()
 
+# Transform products and variants into readable form
+    
     def getId(self):
         self.product_dfs = []
         for i in self.order_id:
@@ -64,11 +79,16 @@ class Orders:
         self.size = len(self.variant_id)
         self.addColumn()
 
+# Increase the columns at the end of the csv file i amount of times so we always capture the total amount of products per order
+    
     def addColumn(self):
         for i in range(self.size):
             column_name = f"variant_id_{+i}"
             self.orders_df[column_name] = self.variant_id
         self.create()
+
+# Drop all uneeded columns (range does not work for this)
+# Set the self destruct variable to true so we can wipe the os of this file
 
     def create(self):
         self.orders_df = self.orders_df.drop(self.orders_df.columns[[
@@ -80,6 +100,8 @@ class Orders:
         self.destruct=True
         self.delete()
 
+# Wait until all data has been cleared so we can remove the file before the next iteration of this script runs
+    
     def delete(self):
         my_file = r"C:\Users\DamienDavis\Documents\API\test.csv"
         if os.path.isfile(my_file):
