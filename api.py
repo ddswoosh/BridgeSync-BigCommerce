@@ -108,8 +108,7 @@ class Orders:
             if self.destruct==True:
                 time.sleep(500)
                 os.remove(r"C:\Users\DamienDavis\Documents\API\test.csv")
-
-ct = time.localtime()
-o = Orders()
+                
 if __name__ in "__main__":
+    o = Orders()
     o.email()
