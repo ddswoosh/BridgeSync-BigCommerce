@@ -111,4 +111,3 @@ class Orders:
                 
 if __name__ in "__main__":
     o = Orders()
-    o.email()
