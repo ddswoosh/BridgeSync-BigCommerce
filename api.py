@@ -37,7 +37,7 @@ class Orders:
             except:
                 self.email()
     else:
-        raise RuntimeError
+        raise TimeError
 
 # Outlook email script 
     
