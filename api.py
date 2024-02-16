@@ -37,7 +37,7 @@ class Orders:
             except:
                 self.email()
     else:
-        raise TimeError
+        raise TimeError("The local time is not at a 30 minute interval")
 
 # Outlook email script 
     
