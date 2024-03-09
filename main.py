@@ -108,6 +108,5 @@ class Orders:
             if self.destruct==True:
                 time.sleep(500)
                 os.remove(r"C:\Users\DamienDavis\Documents\API\test.csv")
-                
-if __name__ == "__main__":
-    o = Orders()
+
+o = Orders()
