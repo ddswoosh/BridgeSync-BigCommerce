@@ -1,4 +1,4 @@
-# Bridge/Sync Cloud to Local
+# Bridge/Sync Cloud to Local (Completed)
 
 This is a bridge and syncronization program using Rest API architechure to hit BigCommerce endpoints.
 The purpose of this was to integrate a new cloud ecommerce website with out local inventory system.
